@@ -27,6 +27,7 @@ compile.bat: Makefile
 
 $(BINS):	$(CSOURCES) $(ASMSOURCES)
 	$(LCC) -Wm-yn"MAGICLIFE" -Wl-yt0x1B -Wl-ya1 -D_ram_func=0xD000 -o $@ $(CSOURCES) assets/*.c $(ASMSOURCES)
+	python3 rom_size.py $(BINS)
 
 clean:
 	rm -f *.o *.lst *.map *.gb *.ihx *.sym *.cdb *.adb *.asm
