@@ -5,6 +5,13 @@
 #include <gb/cgb.h>
 #include <rand.h>
 
+/*
+	- key repeat for life counter?
+	- triple digits possible? for life-gain decks
+	- poison counter?
+	- background music?
+*/
+
 #include "../assets/font0.h" //  ../../../../bin/png2asset font0.png -spr8x8 -map -noflip -tile_origin 0
 #include "../assets/font_alt0.h"
 #include "../assets/font0_v.h"
@@ -149,6 +156,7 @@ uint8_t d_value = 0;
 uint8_t d_rand = 0;
 
 uint8_t eat_start = 0;
+uint8_t reset_enabled = 0;
 
 
 void set_left_font_bkg_data() {	
@@ -322,8 +330,19 @@ void roll_die() {
 }
 
 void update_and_draw() {
-	// Screen Change
+	// Reset
+	if (KEY_PRESSED(J_START) && KEY_PRESSED(J_SELECT) && KEY_PRESSED(J_A) && KEY_PRESSED(J_B)) {
+		if (reset_enabled) {
+			reset();
+		} else {
+			return;
+		}
+	} else if (!reset_enabled && keys > 0) {
+		reset_enabled = 1;
+	}
 
+
+	// Screen Change
 	if (eat_start && KEY_TICKED(J_START | J_SELECT)) {
 		eat_start = 0;
 		draw_text();
@@ -348,7 +367,7 @@ void update_and_draw() {
 	
 
   // Update and Display Screen
-	if (screen == LIFE_COUNTER) { // Die Roller
+	if (screen == LIFE_COUNTER) {
 		if (KEY_TICKED(J_SELECT)) {
 			display_mode = !display_mode;
 			clear_screen();
@@ -403,7 +422,7 @@ void update_and_draw() {
 
 		draw_life_counter_digits();
 
-	} else { // Life Counter
+	} else { // Die Roller
 		if (KEY_TICKED(J_SELECT)) {
 			d_index = (d_index + 1) % 6;
 			draw_text();
