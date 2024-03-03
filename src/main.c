@@ -7,7 +7,7 @@
 
 /*
 	- key repeat for life counter?
-	- triple digits possible? for life-gain decks
+	- better display of triple digit life
 	- poison counter?
 	- background music?
 */
@@ -135,8 +135,8 @@ uint8_t keys = 0;
 #define PLAYER_LEFT 0
 #define PLAYER_RIGHT 1
 
-int8_t player_left = 20;
-int8_t player_right = 20;
+int16_t player_left = 20;
+int16_t player_right = 20;
 uint8_t selected_player = 0;
 
 #define HORIZONTAL 0
@@ -158,10 +158,12 @@ uint8_t d_rand = 0;
 uint8_t eat_start = 0;
 uint8_t reset_enabled = 0;
 
+char text_buffer[20];
+
 
 void set_left_font_bkg_data() {	
 	if (player_left) {
-		digits[0] = player_left / 10;
+		digits[0] = (player_left / 10) % 10;
 		digits[1] = player_left % 10;
 	} else {
 		digits[0] = 10;
@@ -182,7 +184,7 @@ void set_left_font_bkg_data() {
 
 void set_right_font_bkg_data() {
 	if (player_right) {
-		digits[2] = player_right / 10;
+		digits[2] = (player_right / 10) % 10;
 		digits[3] = player_right % 10;
 	} else {
 		digits[2] = 10;
@@ -389,9 +391,9 @@ void update_and_draw() {
 
 			if (KEY_TICKED(J_UP)) {
 				if (selected_player == PLAYER_LEFT) {
-					player_left = MIN(99, player_left + 1);
+					player_left = MIN(999, player_left + 1);
 				} else {
-					player_right = MIN(99, player_right + 1);
+					player_right = MIN(999, player_right + 1);
 				}
 			} else if (KEY_TICKED(J_DOWN)){
 				if (selected_player == PLAYER_LEFT) {
@@ -404,7 +406,7 @@ void update_and_draw() {
 		} else { // VERTICAL
 			if (KEY_TICKED(J_RIGHT)) {
 				selected_player = PLAYER_LEFT;
-				player_left = MIN(99, player_left + 1);
+				player_left = MIN(999, player_left + 1);
 			} else if (KEY_TICKED(J_LEFT)) {
 				selected_player = PLAYER_LEFT;
 				player_left = MAX(0, player_left - 1);
@@ -412,7 +414,7 @@ void update_and_draw() {
 
 			if (KEY_TICKED(J_B)) {
 				selected_player = PLAYER_RIGHT;
-				player_right = MIN(99, player_right + 1);
+				player_right = MIN(999, player_right + 1);
 			} else if (KEY_TICKED(J_A)) {
 				selected_player = PLAYER_RIGHT;
 				player_right = MAX(0, player_right - 1);
